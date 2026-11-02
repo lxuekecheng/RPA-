@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="local-token" content="__APP_TOKEN__">
+  <meta name="color-scheme" content="light">
+  <title>ITSM · 预算转合同</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23087f83'/%3E%3Cpath d='M10 7h8l5 5v14H10zM18 7v5h5M13 17h7M13 21h5' fill='none' stroke='white' stroke-width='1.5'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" type="module"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M5 4h9l5 5v11H5V4Z" stroke="currentColor" stroke-width="1.7"/><path d="M14 4v5h5M8 13h8M8 16h5" stroke="currentColor" stroke-width="1.7"/></svg></div>
+        <div><h1>ITSM <span>·</span> 预算转合同</h1><p>直接读取 ITSM 预算，按剩余额度生成合同草稿。</p></div>
+      </div>
+      <div class="header-badges"><span class="badge badge-safe"><span class="status-dot"></span>仅保存待发</span><span id="connection-badge" class="badge badge-neutral">正在读取配置</span></div>
+    </header>
+
+    <p id="readiness-summary" class="feedback readiness-summary" role="status">正在检查 ITSM 自动录入状态…</p>
+
+    <nav class="steps" aria-label="录入流程">
+      <div id="step-import" class="step active"><span class="step-number">1</span><div><strong>读取 ITSM 预算</strong><span>登录后读取项目编号关联列表</span></div></div>
+      <span class="step-line" aria-hidden="true"></span>
+      <div id="step-review" class="step"><span class="step-number">2</span><div><strong>核对剩余额度</strong><span>扣除已分摊与在途金额</span></div></div>
+      <span class="step-line" aria-hidden="true"></span>
+      <div id="step-run" class="step"><span class="step-number">3</span><div><strong>录入并保存待发</strong><span>在 ITSM 中检查后自行发送</span></div></div>
+    </nav>
+
+    <details class="connection-panel panel" id="connection-panel" open>
+      <summary><div class="section-heading"><span class="section-icon" aria-hidden="true">↗</span><h2>ITSM 连接</h2><span id="browser-state" class="muted">浏览器未打开</span></div><span class="collapse-label">配置连接 <span aria-hidden="true">⌄</span></span></summary>
+      <div class="connection-content">
+        <form id="config-form" class="config-form">
+          <label class="form-field">ITSM 登录地址<input id="oa-url" type="url" placeholder="https://itsm.example.com" autocomplete="url"></label>
+          <label class="form-field">新建合同页面地址<input id="new-form-url" type="url" placeholder="登录后，新建这类合同的页面地址" autocomplete="off"></label>
+          <label class="form-field browser-field">使用浏览器<select id="browser-channel"><option value="chrome">Google Chrome</option><option value="msedge">Microsoft Edge</option></select></label>
+          <button id="save-config" class="button button-secondary" type="submit">保存配置</button>
+          <button id="open-browser" class="button button-primary" type="button"><span aria-hidden="true">↗</span> 打开 ITSM 登录</button>
+        </form>
+        <p class="field-help">请在工具专用浏览器中确认已登录 ITSM，再选择预算执行；浏览器关闭后可能需要重新登录。</p>
+        <p id="config-feedback" class="feedback" role="status" hidden></p>
+        <details id="connection-diagnostics" class="connection-diagnostics" hidden><summary id="diagnostics-label">查看页面联调详情</summary><ul id="diagnostics-list"></ul></details>
+      </div>
+    </details>
+
+    <main>
+      <div class="workspace">
+        <aside class="source-panel panel">
+          <div class="section-heading"><span class="eyebrow">01</span><h2>ITSM 预算来源</h2></div>
+          <label class="form-field">预算年度<input id="budget-year" type="text" inputmode="numeric" maxlength="4" placeholder="2026"></label>
+          <div class="source-filter"><span>收费属性</span><strong>控股企业信息分摊费</strong></div>
+          <button id="scan-button" class="button button-primary full-width" type="button" disabled>读取 ITSM 预算</button>
+          <p id="import-feedback" class="feedback" role="status" hidden></p>
+          <div class="import-note"><strong>本次申请金额</strong><p>分摊合计含税 −（已分摊合同金额 + 在途分摊合同金额）</p><p>已分摊和在途列空白按 0 计算。剩余额度不大于 0 时跳过；总额缺失或金额异常时禁止录入。</p><p>读取列表仅生成预览，勾选后执行。录入前和保存前都会重新核对 ITSM 金额。</p></div>
+          <div class="rule-summary"><span class="mini-label">本次录入规则</span><div><span class="rule-tick">✓</span>只处理指定收费属性</div><div><span class="rule-tick">✓</span>签订日期取执行当天</div><div><span class="rule-tick">✓</span>公司保管合同章</div><div><span class="rule-tick">✓</span>完成后保存待发</div></div>
+        </aside>
+
+        <section class="preview-panel panel" aria-labelledby="preview-heading">
+          <div class="preview-heading"><div class="section-heading"><span class="eyebrow">02</span><h2 id="preview-heading">录入预览</h2><span id="row-count" class="count-badge">0 条</span></div><span id="sheet-label" class="muted"></span></div>
+          <div class="metrics oa-metrics"><div><span>待录入剩余额度合计</span><strong id="total-amount">—</strong></div><div><span>待处理</span><strong id="valid-count">—</strong></div><div><span>余额跳过</span><strong id="skipped-count">—</strong></div><div><span>需检查</span><strong id="blocked-count">—</strong></div><div><span>已保存待发</span><strong id="saved-count">—</strong></div></div>
+          <div id="empty-state" class="empty-state"><div class="empty-illustration" aria-hidden="true"><span></span><span></span><span></span><i>↗</i></div><h3>登录后直接读取 ITSM 预算</h3><p>点击左侧“读取 ITSM 预算”，自动打开合同菜单及项目编号列表。</p><p class="muted">按收费属性筛选，展示三项金额和计算结果。</p></div>
+          <div id="table-wrap" class="table-wrap" hidden><table class="oa-table"><thead><tr><th class="checkbox-cell"><input id="select-all" type="checkbox" aria-label="选择全部待处理预算"></th><th>预算编号</th><th>预算名称</th><th class="amount-cell">分摊合计含税</th><th class="amount-cell">已分摊合同金额</th><th class="amount-cell">在途分摊合同金额</th><th class="amount-cell">本次申请金额</th><th>处理状态</th></tr></thead><tbody id="rows-body"></tbody></table></div>
+          <div class="selection-footer"><span id="selection-label">尚未读取 ITSM 预算</span><span class="muted">点击一行查看计算过程与字段映射</span></div>
+          <div class="execution-bar"><div id="execution-hint" class="execution-hint" role="status">正在检查录入条件…</div><div class="execution-actions"><button id="stop-button" class="button button-danger" type="button" hidden>当前合同完成后停止</button><button id="trial-button" class="button button-secondary" type="button" disabled>试录 1 条</button><button id="run-button" class="button button-primary" type="button" disabled>执行所选</button></div></div>
+          <p id="run-feedback" class="feedback execution-feedback" role="status" hidden></p>
+        </section>
+      </div>
+
+      <div class="bottom-grid">
+        <section class="details-panel panel" aria-labelledby="detail-heading">
+          <div class="section-heading"><span class="eyebrow">03</span><h2 id="detail-heading">字段对应关系</h2><span id="detail-row-label" class="muted">选择一条预算查看</span></div>
+          <p id="detail-message" class="feedback" hidden></p>
+          <div class="mapping-heading"><span>ITSM 表单字段</span><span>填入内容 / 操作</span></div>
+          <dl id="mapping-list" class="mapping-list"></dl>
+          <div class="leave-empty"><strong><span aria-hidden="true">○</span> 表单原值处理</strong><p>预审领导、我方负责人联系方式、上传合同保留表单原值，自动带出非空内容时继续录入。</p><p>下方收款联系人和邮箱保留原值，分别复制到上方对方负责人和联系方式；来源为空则对应目标留空。</p><p>公章保管类型：公司保管合同章；对方公司名称：保留 ITSM 自动带出的值。</p></div>
+          <p class="field-help mapping-footnote">「合同金额」保留 ITSM 默认或联动结果，不直接写入。未指定字段保留表单原值。</p>
+        </section>
+        <section class="logs-panel panel" aria-labelledby="logs-heading"><div class="logs-heading"><div class="section-heading"><span class="log-dot" aria-hidden="true"></span><h2 id="logs-heading">运行记录</h2></div><span id="activity-state" class="muted">等待操作</span></div><div id="log-list" class="log-list" role="log" aria-live="polite" aria-relevant="additions"><p class="log-empty">运行记录将在这里显示。</p></div><div class="log-footer">每条合同保存结果都会记录；结果不确定时，先到 ITSM 核对。</div></section>
+      </div>
+    </main>
+    <footer class="app-footer"><span>预算录入助手 <span class="footer-dot">·</span> 本机运行</span><span id="service-state">正在连接本机服务</span></footer>
+  </div>
+</body>
+</html>

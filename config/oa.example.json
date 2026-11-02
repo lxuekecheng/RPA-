@@ -1,0 +1,52 @@
+{
+  "verified": false,
+  "browserChannel": "chrome",
+  "oaUrl": "",
+  "newFormUrl": "",
+  "timeoutMs": 15000,
+  "saveTimeoutMs": 15000,
+  "source": { "kind": "oa", "verified": false, "year": "", "blankAllocatedAsZero": true },
+  "fields": {
+    "projectBudgetCode": { "selector": "", "frameChain": [] },
+    "applicationAmount": { "selector": "", "frameChain": [] },
+    "contractName": { "selector": "", "frameChain": [] },
+    "signingDate": { "selector": "", "frameChain": [] },
+    "complianceNo": { "selector": "", "frameChain": [] },
+    "contractContent": { "selector": "", "frameChain": [] },
+    "description": { "selector": "", "frameChain": [] },
+    "sealType": { "selector": "", "frameChain": [] },
+    "counterpartyOwner": { "selector": "", "frameChain": [] },
+    "counterpartyContact": { "selector": "", "frameChain": [] },
+    "receivingContact": { "selector": ".field-content-wrapper", "fieldLabel": "收款联系人", "frameChain": ["#zwIframe"] },
+    "receivingEmail": { "selector": ".field-content-wrapper", "fieldLabel": "收款联系人邮箱", "frameChain": ["#zwIframe"] }
+  },
+  "picker": {
+    "mode": "same-page",
+    "open": { "selector": "", "frameChain": [] },
+    "searchInput": { "selector": "", "frameChain": [] },
+    "yearInput": { "selector": "", "frameChain": [] },
+    "searchButton": { "selector": "", "frameChain": [] },
+    "resultRows": { "selector": "", "frameChain": [] },
+    "rowCodeSelector": "",
+    "rowSelectSelector": "",
+    "confirm": { "selector": "", "frameChain": [] },
+    "cancel": { "selector": "", "frameChain": [] },
+    "nextPage": { "selector": "", "frameChain": [] },
+    "queryResponsePath": ""
+  },
+  "content": {
+    "kind": "native",
+    "options": { "selector": "", "frameChain": [] },
+    "placeholderTexts": ["请选择", "请选择...", "请选择…"]
+  },
+  "seal": {
+    "open": { "selector": "", "frameChain": [] },
+    "options": { "selector": "", "frameChain": [] }
+  },
+  "save": {
+    "button": { "selector": "", "frameChain": [] },
+    "success": { "selector": "", "frameChain": [] },
+    "successText": "",
+    "draftId": { "selector": "", "frameChain": [] }
+  }
+}

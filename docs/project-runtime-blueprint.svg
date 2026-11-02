@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1160" viewBox="0 0 1680 1160" role="img" aria-labelledby="title desc">
+<title id="title">ITSM 预算转合同项目运行蓝图</title><desc id="desc">本机网页通过 Node.js 调度 Playwright，操作专用浏览器读写内网 ITSM；使用本地文件记录配置、预览和执行状态。下方给出从登录到保存待发的八步流程。</desc>
+<defs><marker id="arrow-blue" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#2671c9"/></marker><marker id="arrow-teal" markerWidth="8" markerHeight="8" refX="7" refY="3" orient="auto"><path d="M0,0 L0,6 L7,3 z" fill="#087f83"/></marker></defs>
+<rect x="0" y="0" width="1680" height="1160" rx="0" fill="#f3f6fb" stroke="#f3f6fb"/>
+<text x="42" y="68" font-family="Microsoft YaHei,Arial,sans-serif" font-size="40" fill="#192c45" font-weight="700">ITSM 预算转合同 · 项目运行蓝图</text>
+<text x="44" y="105" font-family="Microsoft YaHei,Arial,sans-serif" font-size="21" fill="#52667e" font-weight="400">JavaScript / Node.js / Playwright  ·  Windows 本机运行  ·  按当前源码整理：2026-10-28</text>
+<rect x="40" y="135" width="1600" height="410" rx="22" fill="#eaf1fb" stroke="#b9cbe2"/>
+<text x="62" y="175" font-family="Microsoft YaHei,Arial,sans-serif" font-size="25" fill="#2671c9" font-weight="700">01  本机组件与数据流</text>
+<rect x="70" y="205" width="330" height="162" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<rect x="70" y="205" width="6" height="162" rx="0" fill="#2671c9" stroke="#2671c9"/>
+<text x="92" y="249" font-family="Microsoft YaHei,Arial,sans-serif" font-size="26" fill="#2671c9" font-weight="700">操作页面</text>
+<text x="92" y="290" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">HTML + CSS + JavaScript</text>
+<text x="92" y="321" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">配置 / 预算预览 / 勾选 / 日志</text>
+<text x="92" y="352" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">public/index.html · app.js</text>
+<rect x="470" y="205" width="330" height="162" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<rect x="470" y="205" width="6" height="162" rx="0" fill="#2671c9" stroke="#2671c9"/>
+<text x="492" y="249" font-family="Microsoft YaHei,Arial,sans-serif" font-size="26" fill="#2671c9" font-weight="700">本机 HTTP 服务</text>
+<text x="492" y="290" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">Node.js 原生 node:http</text>
+<text x="492" y="321" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">127.0.0.1:17326 · JSON API</text>
+<text x="492" y="352" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">src/server.mjs</text>
+<rect x="870" y="205" width="330" height="162" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<rect x="870" y="205" width="6" height="162" rx="0" fill="#2671c9" stroke="#2671c9"/>
+<text x="892" y="249" font-family="Microsoft YaHei,Arial,sans-serif" font-size="26" fill="#2671c9" font-weight="700">业务调度与规则</text>
+<text x="892" y="290" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">逐条执行 / 金额计算 / 防重复</text>
+<text x="892" y="321" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">service · oa-budget · contract</text>
+<text x="892" y="352" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">BigInt 整数分 · 北京时间</text>
+<rect x="1270" y="205" width="330" height="162" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<rect x="1270" y="205" width="6" height="162" rx="0" fill="#2671c9" stroke="#2671c9"/>
+<text x="1292" y="249" font-family="Microsoft YaHei,Arial,sans-serif" font-size="26" fill="#2671c9" font-weight="700">浏览器自动化</text>
+<text x="1292" y="290" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">Playwright + 自定义 DOM 定位</text>
+<text x="1292" y="321" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">CSS / iframe / 鼠标键盘事件</text>
+<text x="1292" y="352" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">oa-driver · dom-locator</text>
+<line x1="400" y1="282" x2="470" y2="282" stroke="#2671c9" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+<text x="407" y="257" font-family="Microsoft YaHei,Arial,sans-serif" font-size="16" fill="#52667e" font-weight="400">HTTP</text>
+<line x1="800" y1="282" x2="870" y2="282" stroke="#2671c9" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+<text x="807" y="257" font-family="Microsoft YaHei,Arial,sans-serif" font-size="16" fill="#52667e" font-weight="400">调度</text>
+<line x1="1200" y1="282" x2="1270" y2="282" stroke="#2671c9" stroke-width="2.5" marker-end="url(#arrow-blue)"/>
+<text x="1207" y="257" font-family="Microsoft YaHei,Arial,sans-serif" font-size="16" fill="#52667e" font-weight="400">执行</text>
+<rect x="70" y="410" width="1130" height="105" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="90" y="447" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#087f83" font-weight="700">本地文件 .local/</text>
+<text x="90" y="483" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#52667e" font-weight="400">oa.json：连接与定位    |    latest-preview.json：预算快照    |    history.jsonl：执行状态与保存凭据</text>
+<line x1="1035" y1="367" x2="1035" y2="410" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<text x="1047" y="394" font-family="Microsoft YaHei,Arial,sans-serif" font-size="16" fill="#087f83" font-weight="400">读写</text>
+<rect x="1270" y="410" width="330" height="105" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<rect x="1270" y="410" width="6" height="105" rx="0" fill="#087f83" stroke="#087f83"/>
+<text x="1292" y="454" font-family="Microsoft YaHei,Arial,sans-serif" font-size="26" fill="#087f83" font-weight="700">专用 Chrome / Edge</text>
+<text x="1292" y="495" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">手动登录 · 独立浏览器配置</text>
+<line x1="1435" y1="367" x2="1435" y2="410" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<rect x="40" y="585" width="1180" height="430" rx="22" fill="#eaf6f3" stroke="#b9d9d1"/>
+<text x="62" y="627" font-family="Microsoft YaHei,Arial,sans-serif" font-size="25" fill="#087f83" font-weight="700">02  一次预算转合同的运行顺序</text>
+<text x="62" y="661" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#52667e" font-weight="400">用户操作与自动化串联；每份合同完成后，再处理下一份。</text>
+<rect x="65" y="695" width="255" height="125" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="81" y="730" font-family="Microsoft YaHei,Arial,sans-serif" font-size="22" fill="#087f83" font-weight="700">01</text>
+<text x="120" y="731" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#192c45" font-weight="700">启动与登录</text>
+<text x="81" y="765" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">双击启动工具.cmd</text>
+<text x="81" y="793" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">打开专用浏览器并登录</text>
+<rect x="355" y="695" width="255" height="125" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="371" y="730" font-family="Microsoft YaHei,Arial,sans-serif" font-size="22" fill="#087f83" font-weight="700">02</text>
+<text x="410" y="731" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#192c45" font-weight="700">读取预算</text>
+<text x="371" y="765" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">按年度筛选并完整翻页</text>
+<text x="371" y="793" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">核对总条数与重复记录</text>
+<rect x="645" y="695" width="255" height="125" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="661" y="730" font-family="Microsoft YaHei,Arial,sans-serif" font-size="22" fill="#087f83" font-weight="700">03</text>
+<text x="700" y="731" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#192c45" font-weight="700">计算与预览</text>
+<text x="661" y="765" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">筛选指定收费属性</text>
+<text x="661" y="793" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">计算余额并合并历史状态</text>
+<rect x="935" y="695" width="255" height="125" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="951" y="730" font-family="Microsoft YaHei,Arial,sans-serif" font-size="22" fill="#087f83" font-weight="700">04</text>
+<text x="990" y="731" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#192c45" font-weight="700">人工勾选</text>
+<text x="951" y="765" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">核对金额和字段映射</text>
+<text x="951" y="793" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">试录一条或执行所选</text>
+<line x1="320" y1="757" x2="355" y2="757" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<line x1="610" y1="757" x2="645" y2="757" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<line x1="900" y1="757" x2="935" y2="757" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<line x1="1062" y1="820" x2="1062" y2="860" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<rect x="935" y="860" width="255" height="125" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="951" y="895" font-family="Microsoft YaHei,Arial,sans-serif" font-size="22" fill="#087f83" font-weight="700">05</text>
+<text x="990" y="896" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#192c45" font-weight="700">核验与填表</text>
+<text x="951" y="930" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">精确选择预算并重查余额</text>
+<text x="951" y="958" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">按合同规则逐字段填写</text>
+<rect x="645" y="860" width="255" height="125" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="661" y="895" font-family="Microsoft YaHei,Arial,sans-serif" font-size="22" fill="#087f83" font-weight="700">06</text>
+<text x="700" y="896" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#192c45" font-weight="700">复核与保存</text>
+<text x="661" y="930" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">再次查余额并回读字段</text>
+<text x="661" y="958" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">同步落盘后点保存待发</text>
+<rect x="355" y="860" width="255" height="125" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="371" y="895" font-family="Microsoft YaHei,Arial,sans-serif" font-size="22" fill="#087f83" font-weight="700">07</text>
+<text x="410" y="896" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#192c45" font-weight="700">确认保存结果</text>
+<text x="371" y="930" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">校验待发凭据并回读</text>
+<text x="371" y="958" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">写入 saved；继续下一条</text>
+<rect x="65" y="860" width="255" height="125" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<text x="81" y="895" font-family="Microsoft YaHei,Arial,sans-serif" font-size="22" fill="#087f83" font-weight="700">08</text>
+<text x="120" y="896" font-family="Microsoft YaHei,Arial,sans-serif" font-size="23" fill="#192c45" font-weight="700">人工检查发送</text>
+<text x="81" y="930" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">全批成功后关闭录入页</text>
+<text x="81" y="958" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#52667e" font-weight="400">用户在 ITSM 发送审批</text>
+<line x1="935" y1="922" x2="900" y2="922" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<line x1="645" y1="922" x2="610" y2="922" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<line x1="355" y1="922" x2="320" y2="922" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<rect x="1270" y="610" width="330" height="174" rx="16" fill="#ffffff" stroke="#c8d5e5"/>
+<rect x="1270" y="610" width="6" height="174" rx="0" fill="#087f83" stroke="#087f83"/>
+<text x="1292" y="654" font-family="Microsoft YaHei,Arial,sans-serif" font-size="26" fill="#087f83" font-weight="700">内网 ITSM</text>
+<text x="1292" y="695" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">预算关联列表 → 合同表单</text>
+<text x="1292" y="726" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">保存为待发草稿</text>
+<text x="1292" y="757" font-family="Microsoft YaHei,Arial,sans-serif" font-size="20" fill="#192c45" font-weight="400">页面读写由专用浏览器完成</text>
+<line x1="1435" y1="515" x2="1435" y2="610" stroke="#087f83" stroke-width="2.5" marker-end="url(#arrow-teal)"/>
+<text x="1450" y="574" font-family="Microsoft YaHei,Arial,sans-serif" font-size="17" fill="#087f83" font-weight="400">内网页面访问</text>
+<rect x="1270" y="815" width="330" height="200" rx="16" fill="#fff1ef" stroke="#e9bcb9"/>
+<text x="1290" y="858" font-family="Microsoft YaHei,Arial,sans-serif" font-size="25" fill="#ad3c41" font-weight="700">异常与恢复</text>
+<text x="1290" y="895" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#ad3c41" font-weight="400">已有草稿：本机历史防重复</text>
+<text x="1290" y="928" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#ad3c41" font-weight="400">数据变化：停止并重新读取</text>
+<text x="1290" y="961" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#ad3c41" font-weight="400">保存不确定：停止、人工核查</text>
+<text x="1290" y="994" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#ad3c41" font-weight="400">失败或中止时保留录入页面</text>
+<rect x="40" y="1040" width="1600" height="83" rx="16" fill="#192c45" stroke="#192c45"/>
+<text x="63" y="1080" font-family="Microsoft YaHei,Arial,sans-serif" font-size="27" fill="#ffffff" font-weight="700">申请金额 = 分摊合计含税 − 已分摊合同金额 − 在途分摊合同金额</text>
+<text x="64" y="1113" font-family="Microsoft YaHei,Arial,sans-serif" font-size="19" fill="#d0e4f0" font-weight="400">已分摊 / 在途空白按 0；非正余额跳过；异常金额拦截。输出：合同草稿，保存待发。</text>
+<text x="43" y="1150" font-family="Microsoft YaHei,Arial,sans-serif" font-size="17" fill="#52667e" font-weight="400">范围：当前源码运行架构；ITSM 服务端实现未知。当前产品无文件上传入口，Excel/CSV 解析仅保留兼容代码。</text>
+</svg>

@@ -1,0 +1,31 @@
+node_modules/
+.local/
+config/oa.local.json
+output/
+.playwright-cli/
+*.log
+
+# Local secrets and credentials
+.env
+.env.*
+!.env.example
+!.env.sample
+*.pem
+*.key
+*.p12
+*.pfx
+.npmrc
+.pypirc
+credentials.json
+secrets.json
+
+# Local databases and real business acceptance records
+*.db
+*.db-*
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
+*.sql
+*.bak
+/docs/observed-oa.md
