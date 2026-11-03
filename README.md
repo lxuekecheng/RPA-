@@ -72,6 +72,8 @@ npm.cmd test
 
 ## 代码合并与发布
 
-代码改动须先运行本地测试，再通过 Pull Request 的 Windows / Node.js 22、24 自动测试。测试通过后由用户决定发布时间；涉及 ITSM 页面或保存流程的改动还需对应的真实环境验收。
+代码改动须先运行本地测试，再通过 Pull Request 的 Windows / Node.js 22、24 自动测试。合并到 `main` 后，流水线会重新测试该提交，两组均完整通过后自动发布 [GitHub Release 下载包](https://github.com/lxuekecheng/RPA-/releases/latest)。涉及 ITSM 页面或保存流程的改动，应在合并前完成对应的真实环境验收。
 
 GitHub 端需要同时启用 `main` 分支保护和强制检查，才能阻止未通过测试的改动合并。配置步骤及检查名称见 [测试与发布](docs/测试与发布.md)，Codex 在本项目中遵循 [AGENTS.md](AGENTS.md)。
+
+下载 Release 中的 `*-windows.zip`，解压后双击“启动工具.cmd”。升级时保留原有 `.local/` 配置、浏览器会话和执行历史。发布页同时提供 SHA-256 校验值及对应的提交、测试记录。

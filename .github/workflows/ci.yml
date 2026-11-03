@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: rpa-ci-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   test:
@@ -39,3 +39,28 @@ jobs:
         run: npx --no-install playwright install chrome
       - name: Run all tests, including Chrome fixtures
         run: npm test
+
+  release:
+    name: Publish tested Windows package
+    needs: test
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: windows-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: rpa-release-main
+      cancel-in-progress: false
+    steps:
+      - name: Check out the tested revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 24
+      - name: Package exact commit and publish GitHub Release
+        run: node scripts/release.mjs publish
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

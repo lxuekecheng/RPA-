@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "node src/server.mjs",
-    "test": "node --test"
+    "test": "node scripts/verify-suite.mjs"
   },
   "dependencies": {
     "exceljs": "4.4.0",
