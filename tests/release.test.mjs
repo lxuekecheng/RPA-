@@ -32,11 +32,25 @@ test('发布 ZIP 只包含指定提交的程序与示例配置，排除真实配
   const { root, sha } = fixtureRepo(t);
   fs.writeFileSync(path.join(root, 'src/server.mjs'), 'untested edit');
   const build = buildRelease({ root, sha, runUrl: 'https://example.invalid/ci' });
-  const entries = execFileSync('tar.exe', ['-tf', build.assets[0]], { encoding: 'utf8' });
+  const inspected = JSON.parse(execFileSync('powershell.exe', ['-NoProfile', '-NonInteractive', '-Command', String.raw`
+    [Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $archive = [IO.Compression.ZipFile]::OpenRead($env:RPA_TEST_ARCHIVE)
+    try {
+      $names = @($archive.Entries | ForEach-Object { $_.FullName })
+      $entry = $archive.GetEntry('fixture-rpa/src/server.mjs')
+      if ($null -eq $entry) { throw 'Missing committed source in ZIP' }
+      $reader = [IO.StreamReader]::new($entry.Open(), [Text.Encoding]::UTF8)
+      try { $source = $reader.ReadToEnd() } finally { $reader.Dispose() }
+      [pscustomobject]@{ names = $names; source = $source } | ConvertTo-Json -Compress
+    } finally { $archive.Dispose() }
+  `], { encoding: 'utf8', env: { ...process.env, RPA_TEST_ARCHIVE: build.assets[0] } }));
+  const entries = inspected.names.join('\n');
   assert.match(entries, /fixture-rpa\/src\/server.mjs/);
   assert.match(entries, /fixture-rpa\/config\/oa.example.json/);
+  assert.ok(inspected.names.includes('fixture-rpa/启动工具.cmd'));
   assert.doesNotMatch(entries, /\.local|oa.local.json|node_modules|\.env|observed-oa/);
-  assert.equal(execFileSync('tar.exe', ['-xOf', build.assets[0], 'fixture-rpa/src/server.mjs'], { encoding: 'utf8' }), 'export const tested = true;\n');
+  assert.equal(inspected.source, 'export const tested = true;\n');
   const actualHash = createHash('sha256').update(fs.readFileSync(build.assets[0])).digest('hex');
   assert.equal(build.sha256, actualHash);
   assert.match(fs.readFileSync(build.assets[1], 'utf8'), new RegExp(`^${actualHash}  `));
